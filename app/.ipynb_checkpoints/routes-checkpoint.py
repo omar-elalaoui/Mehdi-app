@@ -82,3 +82,19 @@ def delete_bibliography(id):
     db.session.commit()
     flash('Your bibliography has been deleted!')
     return redirect(url_for('routes.dashboard'))
+
+@bp.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('routes.dashboard'))
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        password = request.form['password']
+        user = User(username=username, email=email)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Congratulations, you are now a registered user!')
+        return redirect(url_for('routes.login'))
+    return render_template('register.html')
